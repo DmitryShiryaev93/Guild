@@ -7,6 +7,8 @@ public class Manager : MonoBehaviour
     public Merchants[] MerchantsArray { get; } = new Merchants[60];
     public int[] NumberOfInstances { get; set; } = { 10, 10, 10, 10, 10, 10 };
 
+    ManagerUI mangerUI;
+
     private void Start()
     {
         for (int i = 0; i < 60; i++)
@@ -51,7 +53,8 @@ public class Manager : MonoBehaviour
             MerchantsArray[i] = temp;
         }
 
-        GetComponent<ManagerUI>().FillInTheTable();
+        mangerUI = GetComponent<ManagerUI>();
+        mangerUI.FillInTheTable();
     }
 
     int movingIndex = 0;
@@ -67,56 +70,52 @@ public class Manager : MonoBehaviour
 
     void Auction()
     {
-        bool merchantBehavior = MerchantsArray[movingIndex].TheCrook;
-
-        for (int i = movingIndex+1; i<MerchantsArray.Length; i++)
+        for(int k=0; k <= 59; k++)
         {
-            bool opponentBehavior = MerchantsArray[i].TheCrook;
+            bool merchantBehavior = MerchantsArray[movingIndex].TheCrook;
 
-            merchantBehavior = CheckingForErrors(merchantBehavior); // 5 - ти процентная вероятность совершить ошибку
-            opponentBehavior = CheckingForErrors(opponentBehavior);
-
-            int rnd = Random.Range(5, 10); // от 5 до 10 сделок
-
-            for(int j=0; j < rnd; j++)
+            for (int i = movingIndex + 1; i < MerchantsArray.Length; i++)
             {
-                if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == false && MerchantsArray[i].BehaviorVerification(merchantBehavior) == false)
+                bool opponentBehavior = MerchantsArray[i].TheCrook;
+
+                int rnd = Random.Range(5, 10); // от 5 до 10 сделок
+
+                for (int j = 0; j < rnd; j++)
                 {
-                    MerchantsArray[movingIndex].Money += 4;
-                    MerchantsArray[i].Money += 4;
+                    merchantBehavior = CheckingForErrors(merchantBehavior); // 5 - ти процентная вероятность совершить ошибку
+                    opponentBehavior = CheckingForErrors(opponentBehavior);
+
+                    if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == false && MerchantsArray[i].BehaviorVerification(merchantBehavior) == false)
+                    {
+                        MerchantsArray[movingIndex].Money += 4;
+                        MerchantsArray[i].Money += 4;
+                    }
+                    else if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == false && MerchantsArray[i].BehaviorVerification(merchantBehavior) == true)
+                    {
+                        MerchantsArray[movingIndex].Money += 1;
+                        MerchantsArray[i].Money += 5;
+                    }
+                    else if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == true && MerchantsArray[i].BehaviorVerification(merchantBehavior) == false)
+                    {
+                        MerchantsArray[movingIndex].Money += 5;
+                        MerchantsArray[i].Money += 1;
+                    }
+                    else if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == true && MerchantsArray[i].BehaviorVerification(merchantBehavior) == true)
+                    {
+                        MerchantsArray[movingIndex].Money += 2;
+                        MerchantsArray[i].Money += 2;
+                    }
                 }
-                else if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == false && MerchantsArray[i].BehaviorVerification(merchantBehavior) == true)
-                {
-                    MerchantsArray[movingIndex].Money += 1;
-                    MerchantsArray[i].Money += 5;
-                }
-                else if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == true && MerchantsArray[i].BehaviorVerification(merchantBehavior) == false)
-                {
-                    MerchantsArray[movingIndex].Money += 5;
-                    MerchantsArray[i].Money += 1;
-                }
-                else if (MerchantsArray[movingIndex].BehaviorVerification(opponentBehavior) == true && MerchantsArray[i].BehaviorVerification(merchantBehavior) == true)
-                {
-                    MerchantsArray[movingIndex].Money += 2;
-                    MerchantsArray[i].Money += 2;
-                }
+                MerchantsArray[movingIndex].StatusUpdate();
+                MerchantsArray[i].StatusUpdate();
             }
-            MerchantsArray[movingIndex].StatusUpdate();
-            MerchantsArray[i].StatusUpdate();
+            movingIndex++;
         }
 
-        movingIndex ++;
-        if (movingIndex <= 59)
-        {
-            Auction();
-        }
-        else
-        {
-            movingIndex = 0;
-            Sort(); // пузырьком
-            UpdateArrayOfMerchants(); // выгнать и пригласить
-            GetComponent<ManagerUI>().FillInTheTable();
-        }
+        movingIndex = 0;
+        Sort(); // пузырьком
+        UpdateArrayOfMerchants(); // выгнать и пригласить
+        mangerUI.FillInTheTable();
     } 
 
     bool CheckingForErrors(bool error)

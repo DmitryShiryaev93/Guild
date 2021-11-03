@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 5428172538096561164}
   m_Layer: 5
   m_Name: TextName
-  m_TagString: Untagged
+  m_TagString: TagName
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 5428172538247238381}
   m_Layer: 5
   m_Name: TextMoney
-  m_TagString: Untagged
+  m_TagString: TagMoney
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -207,7 +207,7 @@ GameObject:
   - component: {fileID: 5428172538280666470}
   m_Layer: 5
   m_Name: TextNumber
-  m_TagString: Untagged
+  m_TagString: TagNumber
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

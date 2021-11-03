@@ -8,8 +8,17 @@ public class ManagerUI : MonoBehaviour
     [SerializeField] private GameObject prefabString;
     [SerializeField] private Transform parentGO;
     [SerializeField] private Text buttonText;
-    [SerializeField] private GameObject leaderPanel;
-    private int numberAge=0;
+    [SerializeField] private Text leaderPanel;
+    private int numberAge = 0;
+
+    Merchants[] arrayLink;
+    int[] arrayIntLink;
+
+    private void Awake()
+    {
+        arrayLink = GetComponent<Manager>().MerchantsArray;
+        arrayIntLink = GetComponent<Manager>().NumberOfInstances;
+    }
 
     public void FillInTheTable()
     {
@@ -18,33 +27,43 @@ public class ManagerUI : MonoBehaviour
             Destroy(parentGO.GetChild(i).gameObject);
         }
 
-        var array = GetComponent<Manager>().MerchantsArray;
-        var arrayInt = GetComponent<Manager>().NumberOfInstances;
-
-        for (int i = 1; i<array.Length+1; i++)
+        for (int i = 1; i< arrayLink.Length+1; i++)
         {
             GameObject go = Instantiate(prefabString, parentGO);
-            go.transform.GetChild(0).GetComponent<Text>().text = i.ToString();
-            go.transform.GetChild(1).GetComponent<Text>().text = array[i-1].Type.ToString();
-            go.transform.GetChild(2).GetComponent<Text>().text = array[i-1].Money.ToString();
+
+            foreach (Transform child in go.transform)
+            {
+                switch (child.tag)
+                {
+                    case "TagNumber":
+                        child.GetComponent<Text>().text = i.ToString();
+                        break;
+                    case "TagName":
+                        child.GetComponent<Text>().text = arrayLink[i - 1].Type.ToString();
+                        break;
+                    case "TagMoney":
+                        child.GetComponent<Text>().text = arrayLink[i - 1].Money.ToString();
+                        break;
+                }
+            }
         }
+
         numberAge++;
         int maxValue=0;
+
         if (numberAge > 10)
         {
             // определение наиболее выгодной стратегии
-            foreach (int j in arrayInt)
+            foreach (int j in arrayIntLink)
             {
                 if (j > maxValue)
                 {
                     maxValue = j;
                 }
             }
-            leaderPanel.GetComponent<Text>().text = $"{array[maxValue].Type}" + " - наиболее выгодная стратегия";
-            leaderPanel.SetActive(true);
+            leaderPanel.text = $"{arrayLink[maxValue].Type}" + " - наиболее выгодная стратегия";
+            leaderPanel.gameObject.SetActive(true);
         }
         buttonText.text = $"{numberAge}" + " year";
     }
-
-
 }

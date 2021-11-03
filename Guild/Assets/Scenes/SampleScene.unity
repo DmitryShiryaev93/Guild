@@ -722,7 +722,7 @@ MonoBehaviour:
     type: 3}
   parentGO: {fileID: 584217155}
   buttonText: {fileID: 269516558}
-  leaderPanel: {fileID: 2060970772}
+  leaderPanel: {fileID: 2060970774}
 --- !u!1 &1207816351
 GameObject:
   m_ObjectHideFlags: 0
